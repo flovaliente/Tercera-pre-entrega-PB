@@ -1,3 +1,4 @@
+import productModel from '../dao/models/productModel.js';
 import productService from '../services/productService.js';
 
 const buildResponse = (data) => { 
@@ -18,27 +19,17 @@ const buildResponse = (data) => {
 const getAllProducts = async (req, res) =>{
     try {
         const user = req.session.user;
+        console.log("Este es el usuario: ", user);
         const { page = 1, limit = 10, category, query, sort } = req.query;
         console.log(user);
         
         let products = await productService.getProducts(page, limit, category, query, sort);
         console.log("Aca los productos: ", products);
 
-        res.render("products", { 
-            title: "Products | Valsaa", 
-            style: "product.css", 
-            user: user, 
-            products: products,
-            totalPages: products.totalPages,
-            prevPage: products.prevPage,
-            nextPage: products.nextPage,
-            page: products.page,
-            hasPrevPage: products.hasPrevPage,
-            hasNextPage: products.nextPage,
-            prevLink: products.hasPrevPage ? `http://localhost:8080/api/products?limit=${products.limit}&page=${products.prevPage}${products.category ? `&category=${products.category}` : ""}${products.stock ? `&stock=${products.stock}` : ""}` : "",
-            nextLink: products.hasNextPage ? `http://localhost:8080/api/products?limit=${products.limit}&page=${products.nextPage}${products.category ? `&category=${products.category}` : ""}${products.stock ? `&stock=${products.stock}` : ""}` : ""
-       
-        });
+        res.send({
+            status: "success",
+            payload: products,
+          });
 
     } catch (error) {
         res.status(500).send('Internal server error.');

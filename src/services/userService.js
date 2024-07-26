@@ -15,10 +15,15 @@ const registerUser = async (user) =>{
                 result.save();
                 return result;
             }
-            const registeredUser = await userManager.registerUser(user); 
-            const cart = await cartManager.createCart(registeredUser._id); 
-            const result = await userManager.createUserCart(registeredUser._id, cart._id);
-            console.log("Usuario: ", result.cart);
+            // Creo nuevo cart para el user
+            const cart = await cartManager.createCart();
+            console.log("User en service: ", user);
+            console.log("Cart en service: ", cart);
+            const result = await userManager.registerUser({
+                ...user,
+                cart: cart._id
+            });
+            
             return result;
         } catch (error) {
             console.error(error.message);

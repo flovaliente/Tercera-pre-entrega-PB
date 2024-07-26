@@ -34,14 +34,12 @@ const getCarts = async (req, res) => {
     
 }
 
-const getCartById = async (req, res) => {// PROBAR SI ESTE FUNCIONA
+const getCartById = async (req, res) => {
     try{
         const { cid } = req.params;
         const cart = await cartService.getCartById(cid);
-        //const cart = await cartModel.findById(cid).populate("products.productId").lean();
         console.log(cart.products);
-        //res.send(cart);
-        res.status(200).render('cart', cart);
+        res.status(200).send(cart);
     }catch (error){
         res.status(error.statusCode || 500).send({
             status: 'error',
@@ -120,17 +118,20 @@ const deleteProdFromCart = async (req, res) =>{
 }
 
 const purchaseCart = async (req, res) =>{
+    const usuario = req.user;
+    console.log("El usuario es", usuario);
     try {
-        const purchaser = req.session.user.email;
+        const purchaser = req.user.user.email;
+        console.log('Email: ', purchaser);
         const cid = req.params.cid;
-        const uid = req.session.user._id;
+        const uid = req.user.user._id;
         console.log(`Initializing cart purchase with id ${cid}.`);
         console.log(`User id from session: ${uid}.`);
 
         const user = await userService.getUser(uid);
 
         // Verifico que el carrito pertenezca al user
-        if(user.cart.toString() != cid){
+        if(user.cart != cid){
             console.log('Permission denied.');
             return res.status(401).send({
                 status: 'error',

@@ -22,5 +22,9 @@
         });
     });
     
+    function addProductToCart(uid, pid){
+        const indexs = { uid, pid };
+        socket.emit("addProductToCart", indexs);
+    }
   
   })();

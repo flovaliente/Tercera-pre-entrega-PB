@@ -37,16 +37,9 @@ class UserRepository{
 
     async registerUser(user){
         try {
-            if(user.email == 'adminCoder@coder.com' && user.password && isValidPassword(user, 'adminCod3r123')){
-                
-                const result = await this.userDao.createUser(user);
-                result.role = 'admin';
-                result.save();
-                return result;
-            }
-            
+            console.log('Cart: ', user.cart);
             const result = await this.userDao.createUser(user);
-            console.log("Usuario: ", user);
+            console.log("Usuario en repository: ", result);
             return result;
         } catch (error) {
             console.error(error.message);

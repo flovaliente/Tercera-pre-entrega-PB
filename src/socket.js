@@ -1,5 +1,8 @@
 import { Server } from 'socket.io';
 
+import userService from './services/userService.js';
+import cartService from './services/cartService.js';
+import productService from './services/productService.js';
 import ProductRepository from "./dao/repositories/ProductRepository.js";
 import CartRepository from './dao/repositories/CartRepository.js';
 import UserRepository from './dao/repositories/UserRepository.js';
@@ -45,10 +48,27 @@ export const init = (httpServer) =>{
             let products = await productRepository.getProducts();
             io.emit('listaProductos', products.docs);
         });
+        // TERMINAR ESTO
+        socketClient.on("addProductToCart", async indexs =>{
+            try {
+                const uid = indexs.uid;
+                const pid = indexs.pid;
+
+                const product = await productService.getProductById(pid);
+                if(!product){
+                    socketClient.emit("statusError", "Producto no encontrado");
+                    return;
+                }
+
+
+            } catch (error) {
+                socketClient.emit("statusError", error.message);
+            }
+        })
         /*-----------USER---------*/
         socketClient.on('registerForm', async (newUser) =>{
             try {
-                await userRepository.registerUser(newUser);
+                await userService.registerUser(newUser);
                 socketClient.emit("registrationSuccess", "Registration completed successfully!")
             } catch (error) {
                 socketClient.emit("registratrionError", error.messages);

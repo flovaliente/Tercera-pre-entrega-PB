@@ -4,6 +4,8 @@ import local from "passport-local";
 import jwt, { ExtractJwt } from 'passport-jwt';
 import dotenv from 'dotenv';
 
+import cartService from "../services/cartService.js";
+import userService from "../services/userService.js";
 import userModel from "../dao/models/userModel.js";
 import CartRepository from "../dao/repositories/CartRepository.js";
 import UserRepository from "../dao/repositories/UserRepository.js";
@@ -23,6 +25,13 @@ const cookieExtractor = (req) =>{
     }
     return token;
 };
+/*const headerExtractor = (req) => {
+    let token = null;
+    if (req && req.headers){
+        token = req.headers.accessToken ?? null;
+    }
+    return token;
+};*/
 
 const initializatePassport = () => { 
     const CLIENT_ID = process.env.CLIENT_ID;
@@ -98,8 +107,15 @@ const initializatePassport = () => {
                     return done(null, false);
                 }
 
-                const newUser = { first_name, last_name, email, password };
-                const result = await userRepository.registerUser(newUser);
+                // Creo nuevo cart para el user
+                const cart = await cartService.createCart();
+                const result = await userService.registerUser({
+                    first_name,
+                    last_name,
+                    email,
+                    password,
+                    cart: cart._id
+                });
                 return done(null, result);
             } catch (error) {
                 return done(error.message);

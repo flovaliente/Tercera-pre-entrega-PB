@@ -2,14 +2,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
 
   <div class="container">
-    <div class="user-conteiner">
-      <h1>{{user.first_name}} {{user.last_name}}</h1>
-      <p>Email: {{user.email}}</p>
-      <h4>Age: {{user.age}}</h4>
-      <h4>Role: {{user.role}}</h4>
-      <a class="logout" href="/api/users/logout">Logout</a>
-    </div>
-
     <hr>
     <h2 class="text-center">Products</h2>
     <hr>
@@ -30,7 +22,7 @@
                           <span class="product-price">$ {{this.price}}</span>
                         </div>
                       
-                        <a href="http://localhost:8080/api/products/{{this._id}}" role="button" class="btn btn-secondary">Add to cart</a>
+                        <a href="http://localhost:8080/api/products/{{this._id}}" onclick="addToCart()" role="button" class="btn btn-secondary">Add to cart</a>
                       
                   
                   </div>

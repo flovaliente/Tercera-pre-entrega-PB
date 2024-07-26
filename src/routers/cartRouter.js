@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import passport from 'passport';
 import { passportCall } from '../utils/authUtil.js';
 import cartController from '../controllers/cartController.js';
 import { authorization } from '../middlewares/auth.js';
@@ -28,6 +29,6 @@ router.delete('/:cid', cartController.deleteCart);
 router.delete('/:cid/product/:pid', cartController.deleteProdFromCart);
 
 // Purchase cart
-router.post('/:cid/purchase', passportCall('jwt'), cartController.purchaseCart);
+router.post('/:cid/purchase', passport.authenticate("jwt", { session: false }), cartController.purchaseCart);
 
 export default router;

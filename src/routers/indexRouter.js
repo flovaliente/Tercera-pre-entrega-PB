@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import passport from 'passport';
 
 import indexController from '../controllers/indexController.js';
 
@@ -15,5 +16,7 @@ router.get('/cart', indexController.cart);
 router.get('/realtimeproducts', indexController.realtimeproducts);
 
 router.get('/login', indexController.login);
+
+router.get('/user', passport.authenticate('jwt', { session: false }), indexController.user);
 
 export default router;

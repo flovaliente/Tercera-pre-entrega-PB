@@ -1,5 +1,6 @@
-export const authorization = (role) =>{
+/*export const authorization = (role) =>{
     return(req, res, next) =>{
+      console.log(req.user);
       if(!req.user){
         return res.status(401).send({ error: 'Unauthorized'});
       }
@@ -9,4 +10,10 @@ export const authorization = (role) =>{
   
       next();
     }
-  }
+  }*/
+
+    export const authorization = (role) => (req, res, next) => {
+      if (req.user.user.role === role) return next();
+    
+      res.status(401).send({ error: 'Unauthorized'});
+    };

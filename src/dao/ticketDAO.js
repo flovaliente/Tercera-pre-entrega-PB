@@ -5,7 +5,7 @@ export default class Ticket{
         try {
             return await ticketModel.create(ticket);
         } catch (error) {
-            console.error(error.message);
+            console.error('Error de create ticket dao: ', error.message);
             return null;
         }
     }

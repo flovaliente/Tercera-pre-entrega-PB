@@ -13,9 +13,6 @@ const welcome = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-      if (req.session.user) {
-        res.redirect("/products");
-      }
       res.render("register", {
         title: "Register | Valsaa",
         style: "login.css",
@@ -30,7 +27,8 @@ const register = async (req, res) => {
 
 const products = async (req, res) => {
     try {
-      const user = req.session.user;
+      const user = req.user;
+      console.log('Este es el usuario: ', user);
       const { page = 1, limit = 10, category, query, sort } = req.query;
       
       let products = await productService.getProducts(page, limit, category, query, sort);
@@ -84,7 +82,7 @@ const realtimeproducts = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-      if(req.session.user){
+      if(req.cookies.accessToken){
         res.redirect("/products");
       }else{
         res.render("login", {
@@ -100,11 +98,26 @@ const login = async (req, res) => {
     
 }
 
+const user = async(req, res) => {
+  try {
+    res.render('user', {
+      title: "Valsaa | User",
+      style: "product.css",
+      user: req.user.user
+    })
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Error.');
+  }
+  
+}
+
 export default {
     welcome,
     register,
     products,
     cart,
     realtimeproducts,
-    login
+    login,
+    user
 };

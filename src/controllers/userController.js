@@ -3,7 +3,7 @@ import userService from '../services/userService.js';
 const register = async (req, res) =>{
     try {
         const user = req.body;
-        const result = await userService.register(user);
+        const result = await userService.registerUser(user);
         res.redirect('/login');
     } catch (error) {
         res.redirect('/register');
@@ -24,7 +24,7 @@ const login = async (req, res) =>{
          //console.log("Password en Controller: ", password);
         const user = await userService.loginUser(email, password);
         //console.log("User cart: ", user.cart);
-         req.session.user = {
+         /*req.session.user = {
             _id: user._id,
             first_name: user.firstName,
             last_name: user.lastName,
@@ -32,7 +32,7 @@ const login = async (req, res) =>{
             age: user.age,
             role: user.role,
             cart: user.cart
-         };
+         };*/
 
          res.cookie('accessToken', user.token , { maxAge: 60*60*1000, httpOnly: true });
          console.log('Login exitoso!');
