@@ -88,7 +88,7 @@ class CartRepository {
 
     async deleteProdFromCart(cid, pid){
         try {
-            return await cartModel.findOneAndUpdate({ _id: cid }, { $pull: { products: { productId: pid } }});
+            return await this.cartDao.deleteProdFromCart(cid, pid);
         } catch (error) {
             console.error(error.message);
             throw new Error(`Error deleting product from cart.`);

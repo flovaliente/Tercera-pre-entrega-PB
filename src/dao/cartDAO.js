@@ -54,4 +54,13 @@ export default class CartDao{
             return null;
         }
     }
+
+    deleteProdFromCart = async (cid, pid) =>{
+        try {
+            return await cartModel.findOneAndUpdate({ _id: cid }, { $pull: { products: { productId: pid } }});
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
 }

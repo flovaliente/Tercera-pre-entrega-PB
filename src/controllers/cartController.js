@@ -69,7 +69,7 @@ const updateQuantityCart = async (req, res) =>{
     }
 }
 
-const addToCart = async (req, res) => {//Arreglar para pasarle quantity por body
+const addToCart = async (req, res) => {
     try{
         const { cid, pid } = req.params;
         await cartService.addToCart(cid, pid);
@@ -131,7 +131,7 @@ const purchaseCart = async (req, res) =>{
         const user = await userService.getUser(uid);
 
         // Verifico que el carrito pertenezca al user
-        if(user.cart != cid){
+        if(user.cart.toString() != cid){
             console.log('Permission denied.');
             return res.status(401).send({
                 status: 'error',
@@ -139,7 +139,11 @@ const purchaseCart = async (req, res) =>{
             });
         }
 
+        console.log("Usuario despues: ", user);
+
         const cart = await cartService.getCartById(cid);
+
+        console.log("Prod.product._id ", cart.products);
         // Verifico que el carrito no este vacio
         if(cart.products.length === 0){
             console.log('Empty cart.');
@@ -154,15 +158,15 @@ const purchaseCart = async (req, res) =>{
         let processedProd = [];
         let total = 0;
         for(let prod of cart.products){
-            const product = await productService.getProductById(prod.product._id);// Obtengo el producto asi puedo ver el stock de este
+            const product = await productService.getProductById(prod.productId._id);// Obtengo el producto asi puedo ver el stock de este
             // Ahora chequeo que el quantity del cart sea menor o igual al stock del producto
             if(prod.quantity > product.stock){
                 notProcessedProd.push(prod);
                 //await cartService.deleteProdFromCart(cid, product._id);
                 console.log(`Product ${product._id} not processed due to lack of stock.`);
             }else{// Mientras voy calculando el total de los productos que no voy procesando, actualizando stock y eliminando los procesados
-                total += prod.product.price * prod.quantity;
-                await productService.updateProduct(prod.product._id, { stock: prod.product.stock - prod.quantity });
+                total += prod.productId.price * prod.quantity;
+                await productService.updateProduct(prod.productId._id, { stock: prod.productId.stock - prod.quantity });
                 processedProd.push(prod);
                 await cartService.deleteProdFromCart(cid, product._id);
             }
@@ -171,6 +175,7 @@ const purchaseCart = async (req, res) =>{
 
         // Creo el ticket
         const ticket = await ticketService.createTicket({ purchaser: purchaser, amount: total, products: processedProd });
+        console.log("Purchaser: ", purchaser, "Total: ", total, "Productos procesados: ", processedProd);
         console.log('New ticket: ', ticket);
 
         res.status(200).send({

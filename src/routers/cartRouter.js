@@ -20,7 +20,7 @@ router.get('/:cid', cartController.getCartById);
 router.put('/:cid/product/:pid', cartController.updateQuantityCart);
 
 // -Add product to cart
-router.post('/:cid/product/:pid', authorization('User'), cartController.addToCart);
+router.post('/:cid/product/:pid', passport.authenticate("jwt", { session: false }), authorization('User'), cartController.addToCart);
 
 // -Delete cart
 router.delete('/:cid', cartController.deleteCart);

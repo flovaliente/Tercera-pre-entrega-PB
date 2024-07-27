@@ -22,7 +22,8 @@ const login = async (req, res) =>{
     try {
          req.session.failLogin = false;
          //console.log("Password en Controller: ", password);
-        const user = await userService.loginUser(email, password);
+        //const user = await userService.loginUser(email, password);
+        const accessToken = await userService.loginUser(email, password);
         //console.log("User cart: ", user.cart);
          /*req.session.user = {
             _id: user._id,
@@ -34,7 +35,7 @@ const login = async (req, res) =>{
             cart: user.cart
          };*/
 
-         res.cookie('accessToken', user.token , { maxAge: 60*60*1000, httpOnly: true });
+         res.cookie('accessToken', accessToken , { maxAge: 60*60*1000, httpOnly: true });
          console.log('Login exitoso!');
          return res.redirect("/products");
          //return res.json({ message: 'Logged in', token: accessToken });

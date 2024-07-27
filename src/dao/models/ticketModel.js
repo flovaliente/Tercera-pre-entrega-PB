@@ -18,7 +18,7 @@ const ticketSchema = new mongoose.Schema({
     products: { type: [Products], default: [] },
     purchaseDateTime: { type : Date, default: Date.now },
     amount: { type: Number, required: true },
-    purchaser: { type: mongoose.Schema.Types.ObjectId, required: true } //contiene el email del usuario
+    purchaser: { type: String, required: true } //contiene el email del usuario
 }, { timestamps: true });
 
 
